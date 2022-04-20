@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BracketSequences
 {
@@ -15,22 +17,28 @@ namespace BracketSequences
         
         private static bool CheckBracketSequences(string bracketString)
         {
-            int counter = 0;
+            var stack = new Stack<char>();
+            var brackets = new Dictionary<char, char>
+            {
+                {')', '('},
+                {'}', '{'},
+                {']', '['}
+            };
 
             foreach (var bracket in bracketString)
             {
-                if (bracket is '(' or '{' or '[')
+                switch (bracket)
                 {
-                    counter++;
-                }
-
-                if(bracket is ')' or '}' or ']')
-                {
-                    counter--;
+                    case '(' or '{' or '[':
+                        stack.Push(bracket);
+                        break;
+                    case ')' or '}' or ']' when stack.Count == 0:
+                    case ')' or '}' or ']' when brackets[bracket] != stack.Pop():
+                        return false;
                 }
             }
 
-            return counter == 0;
+            return stack.Count == 0;
         }
     }
 }
